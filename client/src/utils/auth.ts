@@ -3,7 +3,7 @@ import { JwtPayload, jwtDecode } from 'jwt-decode';
 class AuthService {
   getProfile() {
     const token = this.getToken();
-    return token ? jwtDecode(token) : null;
+    return token ? jwtDecode<JwtPayload>(token) : null;
   }
 
   loggedIn() {
@@ -13,8 +13,8 @@ class AuthService {
 
   isTokenExpired(token: string) {
     try {
-      const decoded: any = jwtDecode(token);
-      return decoded.exp * 1000 < Date.now();
+      const decoded: JwtPayload = jwtDecode<JwtPayload>(token);
+      return decoded.exp ? decoded.exp * 1000 < Date.now() : true;
     } catch (error) {
       return true;
     }
