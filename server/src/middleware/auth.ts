@@ -5,11 +5,12 @@ interface JwtPayload {
   username: string;
 }
 
-export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
+export const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
   const token = req.header('Authorization')?.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({ message: 'Access denied. No token provided.' });
+    res.status(401).json({ message: 'Access denied. No token provided.' });
+    return;
   }
 
   try {
@@ -18,6 +19,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
     (req as any).user = decoded;
     next();
   } catch (error) {
-    return res.status(403).json({ message: 'Invalid or expired token.' });
+    res.status(403).json({ message: 'Invalid or expired token.' });
+    return;
   }
 };
